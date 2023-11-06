@@ -1,15 +1,21 @@
 #include <iostream>
 using namespace std;
 
-class groceryItem
+class GroceryItem
 {
 private:
     string name;
-    int price;
+    double price;
 
 public:
-    string getName();
-    string setName();
-    int getPrice();
-    int setPrice();
+    GroceryItem();
+    GroceryItem(const string &name, double price);
+
+    string getName() const;
+    double getPrice() const;
+
+    void setName(const string &name);
+    void setPrice(double price);
+
+    friend ostream &operator<<(ostream &os, const GroceryItem &item);
 };
