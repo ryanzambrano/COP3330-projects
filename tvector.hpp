@@ -43,7 +43,9 @@ TVector<T> &TVector<T>::operator=(TVector<T> &&v)
 {
     swap(capacity, v.capacity);
     swap(size, v.size);
+
     swap(v.array, v.array);
+
     return *this;
 }
 
@@ -100,4 +102,29 @@ T &TVector<T>::GetLast() const
 {
 
     return &array[size - 1];
+}
+
+template <typename T>
+TVectorIterator<T> Insert(TVectorIterator<T> pos, const T &d)
+{
+
+    if (size == capacity)
+    {
+        // If the vector is at capacity, increase the capacity
+        SetCapacity(capacity + SPARECAPACITY);
+    }
+
+    for (unsigned int i = size; i > pos.index; --i)
+    {
+        array[i] = array[i - 1];
+    }
+
+    array[pos.index] = d;
+    ++size;
+}
+
+template <typename T>
+TVectorIterator<T> GetIterator()
+{
+    TVector<int> v1;
 }
