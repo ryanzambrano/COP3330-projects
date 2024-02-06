@@ -35,6 +35,7 @@ int main()
     PrintList(v1, "v1");
 
     v1.Remove(v1.GetIterator());
+
     PrintList(v1, "v1");
 
     v1.Remove(v1.GetIterator());
@@ -61,6 +62,7 @@ int main()
     itr.Next();           // advance two spots
     itr = v1.Remove(itr); // delete current item
     PrintList(v1, "v1");
+    itr.Next();
 
     for (int i = 0; i < 5; i++)
         itr.Previous(); // back 5 spots
