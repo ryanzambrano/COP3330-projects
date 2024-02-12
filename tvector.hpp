@@ -187,42 +187,49 @@ template <typename T>
 TVectorIterator<T> TVector<T>::Remove(TVectorIterator<T> pos)
 {
 
-    if (pos.index < size && pos.index >= 0)
+    // Shift elements left to overwrite the element at pos.index
+    TVectorIterator<T> ret_pos;
+    for (int i = pos.index; i < size - 1; ++i)
     {
-        // Shift elements left to overwrite the element at pos.index
-        for (unsigned int i = pos.index; i < size - 1; ++i)
-        {
-            array[i] = array[i + 1];
-        }
-        --size; // Decrement size to account for the removed element
-
-        // If desired, you could reduce the capacity of the array here,
-        // but it's not necessary for removal.
-        // Optionally, consider whether to shrink the vector's capacity
-        if (pos.index < size)
-        { // If not at the end, adjust pointer
-            pos.ptr = &array[pos.index];
-        }
-        else
-        {                      // Adjusted for when the last element is removed
-            pos.ptr = nullptr; // Or &array[size-1] if you want it to point to the new last element
-            pos.index = size;  // Adjust index to new size (or size-1 for last element)
-        }
-        cout << pos.index << "position after removed element " << *pos.ptr << endl;
+        array[i] = array[i + 1];
     }
+    --size;
+    ret_pos.vsize = size;
+    ret_pos.index = pos.index - 1; // Decrement size to account for the removed element
+
+    return ret_pos;
 }
 
 template <typename T>
 TVectorIterator<T> TVector<T>::Remove(TVectorIterator<T> pos1, TVectorIterator<T> pos2)
 {
-    int diff = pos1.index - pos2.index + 1;
+    // Ensure pos1 is before pos2 and both are within bounds
+    if (pos1.index > pos2.index || pos2.index >= size)
+    {
+        // You may want to handle this case more gracefully
+        throw std::invalid_argument("Invalid iterator positions for Remove operation.");
+    }
 
+    // Calculate the number of elements to remove
+    unsigned int diff = pos2.index - pos1.index;
+
+    // Shift elements left to overwrite the elements being removed
     for (unsigned int i = pos1.index; i + diff < size; ++i)
     {
         array[i] = array[i + diff];
     }
 
+    // Adjust the size of the vector
     size -= diff;
+
+    // Prepare the return iterator
+    TVectorIterator<T> ret_pos;
+    ret_pos.vsize = size;
+    ret_pos.index = pos1.index; // Point to where the first removed item was
+    // Ensure the pointer in ret_pos points to the correct element
+    ret_pos.ptr = size > 0 ? &array[ret_pos.index] : nullptr;
+
+    return ret_pos;
 }
 
 template <typename T>
@@ -238,13 +245,18 @@ TVectorIterator<T> TVector<T>::GetIteratorEnd() const
 template <typename T>
 bool TVectorIterator<T>::HasNext() const
 {
-    if (index >= 0 && index < vsize)
+    cout << "hasnext index" << index << "vsize" << vsize << endl;
+
+    if (index >= vsize)
     {
-        return true; // There is a next item
+        cout << "false";
+        return false;
     }
     else
     {
-        return false;
+        cout << "false";
+
+        return true;
     }
 }
 
@@ -267,7 +279,8 @@ TVectorIterator<T> TVectorIterator<T>::Next()
     if (index < vsize - 1)
     {
         index += 1;
-        cout << index << endl;
+        // ptr += 1;
+        //  cout << index << endl;
     }
     return *this;
 }
@@ -279,11 +292,9 @@ TVectorIterator<T> TVectorIterator<T>::Previous()
     if (index > 0)
     {
         index -= 1; // Move to the previous element by decrementing index
+                    // ptr -= 1;
     }
 
-    cout << index << "remove" << endl;
-
-    // index -= 1;
     return *this; // Return the iterator itself to allow for chaining
 }
 
@@ -323,6 +334,7 @@ void TVector<T>::SetCapacity(unsigned int c)
     {
         newSize = size; // Otherwise, keep the size as is
     }
+
     for (unsigned int i = 0; i < newSize; ++i)
     {
         newArray[i] = array[i];
@@ -344,48 +356,29 @@ TVector<T> operator+(const TVector<T> &t1, const TVector<T> &t2)
     // Set the capacity to the sum of both vector sizes to avoid multiple reallocations
     result.SetCapacity(t1.GetSize() + t2.GetSize());
 
-    TVectorIterator<int> itr1 = t1.GetIterator();
+    TVectorIterator<T> it1 = t1.GetIterator();
 
-    TVectorIterator<int> itr2 = t2.GetIterator();
-
-    // Iterate through t1 using iterators and add elements to result
-    for (int i = 0; i < t1.GetSize(); i++)
+    for (int i = 0; i < t1.GetSize(); ++i)
     {
-        // itr1 = result.Insert(itr1, itr1.GetData());
-        result.InsertBack(itr1.GetData());
-        // cout << itr1 << endl;
+        // Do something with the current element
+        result.InsertBack(it1.GetData());
 
-        itr1.Next();
-        cout << itr1.GetData();
+        // Advance to the next element
+        it1.Next();
     }
 
-    for (int i = t1.GetSize(); i < t2.GetSize() + t1.GetSize(); i++)
-    {
-        // itr1 = result.Insert(itr1, itr1.GetData());
-        result.InsertBack(itr2.GetData());
-        // cout << itr1 << endl;
+    TVectorIterator<T> it2 = t2.GetIterator();
 
-        itr2.Next();
-        // cout << itr2.GetData();
-    }
-    // Add the last element of t1 if t1 is not empty
-    /*if (!t1.IsEmpty())
+    for (int i = 0; i < t2.GetSize(); ++i)
     {
-        result.InsertBack(t1.GetLast());
+        // Do something with the current element
+        result.InsertBack(it2.GetData());
+
+        // Advance to the next element
+        it2.Next();
     }
 
-    // Iterate through t2 using iterators and add elements to result
-    /*for (TVectorIterator<T> it = t2.GetIterator(); it.HasNext(); it.Next())
-    {
-        result.InsertBack(it.GetData());
-    }*/
-    // Add the last element of t2 if t2 is not empty
-    /*if (!t2.IsEmpty())
-    {
-        result.InsertBack(t2.GetLast());
-    }*/
-
-    return result; // Return the concatenated vector.
+    return result; // Return the concatenated vector
 }
 
 #endif // TVECTOR_HPP
