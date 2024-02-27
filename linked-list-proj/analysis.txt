@@ -1,0 +1,6 @@
+
+Reverse() Analysis:
+The reverse() member function iterates through each node in the list exactly once to swap the next and prev pointers for each node. This operation takes constant time for each node. Therefore, the complexity of the reverse operation is O(n), where n is the number of elements in the list. The swapping of head and tail pointers also takes constant time, which does not affect the overall complexity.
+
+Remove_if() Analysis:
+The remove_if() member function iterates through each node in the list and checks a condition for each element. If the condition is true, it removes the element from the list. The removal operation involves changing the next and prev pointers of neighboring nodes, which takes constant time. However, since it potentially examines and might remove each element in the list, the complexity is O(n), where n is the number of elements in the list. In the worst case, where the condition matches all elements or a significant portion thereof, the function must visit and potentially remove each of these elements, leading to a linear complexity relative to the size of the list.

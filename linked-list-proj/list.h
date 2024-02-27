@@ -111,7 +111,10 @@ namespace cop4530
             // increment/decrement operators
             iterator &operator++()
             {
-                this->current = this->current->next;
+                if (this->current != nullptr && this->current->next != nullptr)
+                { // Check to avoid moving past the end
+                    this->current = this->current->next;
+                }
                 return *this;
             }
 
@@ -205,7 +208,6 @@ namespace cop4530
         // destructor
         ~List()
         {
-            clear();
             delete head;
             delete tail;
         }
@@ -236,10 +238,10 @@ namespace cop4530
         List &operator=(std::initializer_list<T> iList)
         {
             // TO BE FILLED
-            clear(); // Clear the current list contents.
-            for (const T &val : iList)
+            this->clear(); // Clear the current list contents.
+            for (auto &i : iList)
             {
-                push_back(val); // Insert each value from the initializer list.
+                this->push_back(i); // Insert each value from the initializer list.
             }
             return *this;
         }
@@ -263,7 +265,7 @@ namespace cop4530
             // TO BE FILLED
             if (empty() || theSize == 1)
             {
-                return;
+                return; // No need to reverse if the list is empty or has only one element.
             }
 
             Node *current = head;
@@ -274,7 +276,7 @@ namespace cop4530
                 current->next = current->prev;
                 current->prev = temp;
 
-                // Move to the next node in the original list, which is prev in the current node after swap
+                // Move to the next node in the original list, which is now the 'prev' node
                 current = temp;
             }
 
@@ -282,10 +284,6 @@ namespace cop4530
             Node *temp = head;
             head = tail;
             tail = temp;
-
-            // Adjust the head and tail to point to each other correctly
-            head->next = head->next->next;
-            tail->prev = tail->prev->prev;
         }
 
         T &front() { return *begin(); } // reference to the first element
@@ -376,7 +374,6 @@ namespace cop4530
         {
 
             Node *p = itr.current;
-            std::cout << p;
             iterator I = ++itr;
             p->prev->next = p->next;
             p->next->prev = p->prev;

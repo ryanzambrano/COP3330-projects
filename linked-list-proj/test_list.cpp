@@ -132,12 +132,9 @@ int main()
 
     cout << "testing other constructors" << endl;
     List<int> l_t1(8, 5);
-    cout << "construck 1" << endl;
     List<int> l_t2(l_t1.begin(), l_t1.end());
-    cout << "construck 2" << endl;
 
     List<int> iList{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 100, 90, 80, 70, 60, 50};
-    cout << "construck 3" << endl;
 
     cout << l_t2 << endl;
     cout << iList << endl;
