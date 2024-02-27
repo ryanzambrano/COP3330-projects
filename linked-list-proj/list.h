@@ -251,12 +251,9 @@ namespace cop4530
 
         // delete all elements
         void clear()
-        {                                   // to be filled
-            int initialSize = this->size(); // Store the initial size
-            for (int i = 0; i < initialSize; i++)
-            {
-                pop_front(); // Each call reduces the size by one
-            }
+        {
+            while (!empty())
+                pop_front();
         }
 
         // BONUS POINTS
@@ -377,7 +374,9 @@ namespace cop4530
         // erase one element
         iterator erase(iterator itr)
         {
+
             Node *p = itr.current;
+            std::cout << p;
             iterator I = ++itr;
             p->prev->next = p->next;
             p->next->prev = p->prev;
