@@ -1,0 +1,5 @@
+In the code I create a binary expression tree which converts and manages postfix expressions.
+We have constructors that initialize empty trees, build trees from existing postfix expressions, and copy existing trees.
+I also utilize destructors to ensure that memory is being freed. We also build trees from postfix expressions using a stack, which we are able to print in both infix and postfix form. 
+Also, I implemented utility functions that can determine the size of the tree, and also check if it’s empty. 
+Overall, this Binary Expression Tree effectively converts postfix expressions and manages memory efficiently
